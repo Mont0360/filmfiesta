@@ -6,33 +6,33 @@ import { Col, Row, Container } from "../../components/Grid";
 import { List, ListItem } from "../../components/List";
 import { Input, TextArea, FormBtn } from "../../components/Form";
 
-function Books() {
+function Movies() {
   // Setting our component's initial state
-  const [books, setBooks] = useState([])
+  const [movies, setMovies] = useState([])
   const [formObject, setFormObject] = useState({
     title: "",
-    author: "",
+    director: "",
     synopsis: ""
   })
 
-  // Load all books and store them with setBooks
+  // Load all movies and store them with setMovies
   useEffect(() => {
-    loadBooks()
+    loadMovies()
   }, [])
 
-  // Loads all books and sets them to books
-  function loadBooks() {
-    API.getBooks()
+  // Loads all movies and sets them to movies
+  function loadMovies() {
+    API.getMovies()
       .then(res => 
-        setBooks(res.data)
+        setMovies(res.data)
       )
       .catch(err => console.log(err));
   };
 
-  // Deletes a book from the database with a given id, then reloads books from the db
-  function deleteBook(id) {
-    API.deleteBook(id)
-      .then(res => loadBooks())
+  // Deletes a movie from the database with a given id, then reloads movies from the db
+  function deleteMovie(id) {
+    API.deleteMovie(id)
+      .then(res => loadMovies())
       .catch(err => console.log(err));
   }
 
@@ -42,22 +42,22 @@ function Books() {
     setFormObject({...formObject, [name]: value})
   };
 
-  // When the form is submitted, use the API.saveBook method to save the book data
-  // Then reload books from the database
+  // When the form is submitted, use the API.saveMovie method to save the movie data
+  // Then reload movies from the database
   function handleFormSubmit(event) {
     event.preventDefault();
-    if (formObject.title && formObject.author) {
-      API.saveBook({
+    if (formObject.title && formObject.director) {
+      API.saveMovie({
         title: formObject.title,
-        author: formObject.author,
+        director: formObject.director,
         synopsis: formObject.synopsis
       })
         .then(() => setFormObject({
           title: "",
-          author: "",
+          director: "",
           synopsis: ""
         }))
-        .then(() => loadBooks())
+        .then(() => loadMovies())
         .catch(err => console.log(err));
     }
   };
@@ -67,7 +67,7 @@ function Books() {
         <Row>
           <Col size="md-6">
             <Jumbotron>
-              <h1>What Books Should I Read?</h1>
+              <h1>Search or Input a Movie to Watch!</h1>
             </Jumbotron>
             <form>
               <Input
@@ -78,8 +78,8 @@ function Books() {
               />
               <Input
                 onChange={handleInputChange}
-                name="author"
-                placeholder="Author (required)"
+                name="director"
+                placeholder="Director (required)"
                 value={formObject.author}
               />
               <TextArea
@@ -89,28 +89,28 @@ function Books() {
                 value={formObject.synopsis}
               />
               <FormBtn
-                disabled={!(formObject.author && formObject.title)}
+                disabled={!(formObject.director && formObject.title)}
                 onClick={handleFormSubmit}
               >
-                Submit Book
+                Submit Movie
               </FormBtn>
             </form>
           </Col>
           <Col size="md-6 sm-12">
             <Jumbotron>
-              <h1>Books On My List</h1>
+              <h1>Film Fiesta List</h1>
             </Jumbotron>
-            {books.length ? (
+            {movies.length ? (
               <List>
-                {books.map(book => {
+                {movies.map(movie => {
                   return (
-                    <ListItem key={book._id}>
-                      <a href={"/books/" + book._id}>
+                    <ListItem key={movie._id}>
+                      <a href={"/movies/" + movie._id}>
                         <strong>
-                          {book.title} by {book.author}
+                          {movie.title} by {movie.director}
                         </strong>
                       </a>
-                      <DeleteBtn onClick={() => deleteBook(book._id)} />
+                      <DeleteBtn onClick={() => deleteMovie(movie._id)} />
                     </ListItem>
                   );
                 })}
@@ -125,4 +125,4 @@ function Books() {
   }
 
 
-export default Books;
+export default Movies;
