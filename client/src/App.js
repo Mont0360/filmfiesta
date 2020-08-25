@@ -1,6 +1,10 @@
-import React from 'react';
-import './App.css';
+import React, {useState} from "react";
+import Nav from "./components/Nav";
+import User from "./pages/User";
+
+// import './App.css';
 import unirest from 'unirest';
+
 
 class App extends React.Component {
 
@@ -29,8 +33,9 @@ class App extends React.Component {
  render() {
    return (
      <div className="App">
-       <header className="App-header">
-       </header>
+       <Nav/>
+       <User/>
+
      </div>
    );
  }
