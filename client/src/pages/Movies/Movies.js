@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
-import DeleteBtn from "../components/DeleteBtn";
-import Jumbotron from "../components/Jumbotron";
-import API from "../utils/API";
-import { Link } from "react-router-dom";
-import { Col, Row, Container } from "../components/Grid";
-import { List, ListItem } from "../components/List";
-import { Input, TextArea, FormBtn } from "../components/Form";
+import React, { useEffect, useState } from "react";
+import Jumbotron from "../../components/Jumbotron";
+import DeleteBtn from "../../components/DeleteBtn";
+import API from "../../utils/API";
+import { Col, Row, Container } from "../../components/Grid";
+import { List, ListItem } from "../../components/List";
+import { Input, TextArea, FormBtn } from "../../components/Form";
 
 function Movies() {
   // Setting our component's initial state
   const [movies, setMovies] = useState([])
-  const [formObject, setFormObject] = useState({})
+  const [formObject, setFormObject] = useState({
+    title: "",
+    director: "",
+    synopsis: ""
+  })
 
   // Load all movies and store them with setMovies
   useEffect(() => {
@@ -33,7 +36,7 @@ function Movies() {
       .catch(err => console.log(err));
   }
 
-  // Handles updateing component state when the user types into the input field
+  // Handles updating component state when the user types into the input field
   function handleInputChange(event) {
     const { name, value } = event.target;
     setFormObject({...formObject, [name]: value})
@@ -43,13 +46,18 @@ function Movies() {
   // Then reload movies from the database
   function handleFormSubmit(event) {
     event.preventDefault();
-    if (formObject.title) {
+    if (formObject.title && formObject.director) {
       API.saveMovie({
         title: formObject.title,
         director: formObject.director,
         synopsis: formObject.synopsis
       })
-        .then(res => loadMovies())
+        .then(() => setFormObject({
+          title: "",
+          director: "",
+          synopsis: ""
+        }))
+        .then(() => loadMovies())
         .catch(err => console.log(err));
     }
   };
@@ -59,48 +67,53 @@ function Movies() {
         <Row>
           <Col size="md-6">
             <Jumbotron>
-              <h1>Movies I Need To Watch!</h1>
+              <h1>Search or Input a Movie to Watch!</h1>
             </Jumbotron>
             <form>
               <Input
                 onChange={handleInputChange}
                 name="title"
                 placeholder="Title (required)"
+                value={formObject.title}
               />
               <Input
                 onChange={handleInputChange}
                 name="director"
-                placeholder="Director (optional)"
+                placeholder="Director (required)"
+                value={formObject.author}
               />
               <TextArea
                 onChange={handleInputChange}
                 name="synopsis"
-                placeholder="Synopsis (optional)"
+                placeholder="Synopsis (Optional)"
+                value={formObject.synopsis}
               />
               <FormBtn
-                disabled={!(formObject.title)}
+                disabled={!(formObject.director && formObject.title)}
                 onClick={handleFormSubmit}
               >
-                Add to List
+                Submit Movie
               </FormBtn>
             </form>
           </Col>
           <Col size="md-6 sm-12">
             <Jumbotron>
-              <h1>My Fiesta Movie List</h1>
+              <h1>Film Fiesta List</h1>
             </Jumbotron>
             {movies.length ? (
               <List>
-                {movies.map(movie => (
-                  <ListItem key={movie._id}>
-                    <Link to={"/movie/" + movie._id}>
-                      <strong>
-                        {movie.title} by {movie.director}
-                      </strong>
-                    </Link>
-                    <DeleteBtn onClick={() => deleteMovie(movie._id)} />
-                  </ListItem>
-                ))}
+                {movies.map(movie => {
+                  return (
+                    <ListItem key={movie._id}>
+                      <a href={"/movies/" + movie._id}>
+                        <strong>
+                          {movie.title} by {movie.director}
+                        </strong>
+                      </a>
+                      <DeleteBtn onClick={() => deleteMovie(movie._id)} />
+                    </ListItem>
+                  );
+                })}
               </List>
             ) : (
               <h3>No Results to Display</h3>
