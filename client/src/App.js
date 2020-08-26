@@ -1,6 +1,8 @@
 import React, {useState} from "react";
+
 import Nav from "./components/Nav";
 import User from "./pages/User";
+import Movies from "./pages/Movies"
 
 // import './App.css';
 import unirest from 'unirest';
@@ -35,6 +37,7 @@ class App extends React.Component {
      <div className="App">
        <Nav/>
        <User/>
+       {/* <Movies /> */}
 
      </div>
    );
