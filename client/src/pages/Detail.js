@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../components/Grid";
 import Jumbotron from "../components/Jumbotron";
 import API from "../utils/API";
@@ -7,14 +7,14 @@ import API from "../utils/API";
 function Detail(props) {
   const [movie, setMovie] = useState({})
   
-  let {id} = useParams();
+  // let {id} = useParams();
   // Add code to get the movie with an _id equal to the id in the route param
   // e.g. http://localhost:3000/movies/:id
   // The movie id for this route can be accessed using the useParams hook
   // from react-router-dom.
   
   useEffect(() => {
-    console.log(id)
+    // console.log(id)
     API.getMovie(props.match.params.id)
       .then(res => setMovie(res.data))
       .catch(err => console.log(err));
